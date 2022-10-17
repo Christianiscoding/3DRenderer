@@ -1,0 +1,81 @@
+Computer-aided design (CAD) software
+design on computer before building in reallife
+
+core: abstracting 3d design into something that can be viewed
+and edited on a 2d screen.
+
+3 basic functionalities:
+1. data structure for the object which is being designed
+2. display the design on the users screen
+3. interact with the object being designed
+
+(addition): save and load designs from disk (collaboration)
+
+domain specifics:
+-architecture CAD tools
+    -physics to test climate stress
+    -3d printing: is the object valid to print
+    -electrical CAD tool: physics of electricity running through copper
+    -film special CAD: features to accurately simulate pyrokinetics
+
+goal:
+-keep the complexity of rendering the code low
+-data strucutre design which allows to store and draw complex objects
+with simple rendering logic
+
+1. create window
+2. communicate with graphics drivers to render to the screen (OpenGL)
+
+Legacy OpenGL provides "fixed function pipeline":
+global variables: programmer can enable and disable
+automated implementations of features such as lighting, coloring,
+face culling, etc.
+OpenGL renders the scene with selected functionality
+
+Modern OpenGL provides "programmable rendering pipeline"
+programmers writes small programms (shaders) that run on GPUs
+
+Used in this project: legacy openGL
+
+GLUT:
+bundled with OpenGL: allows us to create operating system windows
+and to register user interface callbacks.
+More full-feated library for window managemen and user interaction:
+GTK or Qt
+
+Architecture:
+class:
+-Viewer
+
+
+
+process:
+single viewer instances:
+-manages window creation and rendering
+-contains the main loop for our program
+-gui window and opengl initalization in the init process of the viewer
+-After initializing Viewer:
+-call glutmainloop function to transfer program execution to glut
+(function) doesn't return
+-The callbacks we have registered on GLUT events will be
+called when those events occur
+
+functions:
+-init_interface:
+    -creates window that the modeller will be rendered into
+    and specifies the function to be called when the design
+    needs to be rendered
+- init_opengl:
+    -sets up the OpenGL state needed for the project. It sets
+    the matrices, enables backface culling, registers a light
+    to illuminate the scene, and tells OpenGL that we would like
+    objects to be colored.
+- init_scene:
+    - function creates the Scene objects and places some initial
+    to get the user started.
+- init_interaction:
+    - registers callbacks for user interaction, as we'll discuss later
+
+
+
+
