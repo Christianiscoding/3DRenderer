@@ -1,0 +1,17 @@
+-learn how to draw in opengl
+-create a viewer
+-create a map
+-color the map
+-make the viewer see things
+
+Chapter 1: Introduction to OpenGL
+-Appreciate in general terms what OpenGL does
+-Identify different levels of rendering complexity
+-Understand the basic structure of an OpenGL program
+-Recognize OpenGL command syntax
+-Identify the sequence of operations of the OpenGL rendering pipeline
+-Understand in general terms how to animate graphics in an OpenGL program
+
+What is OpenGL:
+-software interface to graphics hardware
+-150 distinct commands that you use
