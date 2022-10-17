@@ -1,0 +1,222 @@
+In order to learn more about 3d rendering
+I'm going to build a 3d engine in pygame from scratch
+
+pygame provides good 2d rendering functionality.
+Linear Algebra engine will be written from scratch.
+
+From 2D to 3D:
+
+In order to make the move to three-dimensional space, we need to introduce
+a few new mathematical concepts. We need to know:
+-how to represent points in 3D space
+-move points between different coordinate frames
+-how to remove the third dimension when projecting points onto the screen
+
+The Cartesian Plane:
+-two perpendicular axes (commonly labeled x and y)
+-for example, the point P(3,5) is 3 units to the right along the x axis
+and 5 units up along the y axis, relative to the origin. The origin
+is identified as the point having coordinates (0,0).
+We turn the Cartesian plane into a 3D coordinate space by adding another
+orthogonal axis, which we'll name z.
+
+Handedness
+-Handedness refers to the orientation of the z-axis in a given 3D space.
+if the z-axis conforms to the so-called right-hand rule
+(x) x (y) = z, then the space is said to be right-handed. Alternatively,
+if the z-axis points in the other direction (x) x (y) = -z, the space
+is left-handed.
+
+Introduction to Transformations
+
+A geometric transformation is a function that maps a point to another
+point. The most common transformation in a computer graphics are
+translation, rotation, and scaling.
+in 3D rotation and scaling can be represented as a multiplication of a
+3x3 matrix by a 3D point. Unfortunately, translation cannot be
+represented in this way, but there is a formulation we'll see below that
+nevertheless allows us to capture all the transformations we wish to perform
+using matrix multiplcation
+
+Linear Transformation:
+A linear transformation T must obey these two properties:
+T(ax) = aT(x)
+T(x+y) = T(x) + T(y)
+In words:
+1. scaling the input before the transformation is the same as
+scaling the output after the transformation.
+2. transformation of sums is equal to the sum of the transformed inputs
+
+Identity:
+The identity transformation maps every points onto itself. It is a matrix
+with ones along the diagonals and zeros everywhere else:
+    [1 0 0]
+I = [0 1 0]
+    [0 0 1]
+
+Scale:
+    [Sx 0 0]
+S = [0 Sx 0]
+    [0 0 Sx]
+
+sx, sy and sz are the scale factors along the x,y and z axes, respectively
+You can see that if sx = sy = sz = 1, the matrix is the identify matrix
+
+Rotation:
+Rotation in three dimensions is a complex topic. Fortunately, we don't
+need to understand all the intricacies to use them, we consider rotation
+around the Z axis, the generalize to rotation around any axis
+
+Rotate Around the Z Axis:
+Rotation around the Z axis is the simplest to visualize, since the points
+that lie in the X-Y plane stay in the X-Y plane when rotated around the
+Z axis. Here is a 3x3 matrix that will rotate points about the X axis.
+
+    [cos0 -sin0 0]
+R = [sin0  cos0 0]
+    [0     0    1]
+
+It is important to note that 0 is in radians, and a positive angle results
+in a counterclockwise rotation.
+Matrices that represent rotation around the X or Y axis can also be formulated,
+and look very similar.
+
+Mathematics for 3D Game Programming and Computer Graphics (Third edition):
+
+Preface
+- OpenGL
+- independed of underlying technology used to achieve the desired 3D result
+
+
+Content Overview:
+
+Chapter 1: The Rendering Pipeline
+
+This is a preliminary chapter that provides an overview of the rendering
+pipeline in the context of the OpenGL library. Many of the topics mentioned
+in this chapter are examined in higher detail elsewhere in the book,
+so mathematical discussions are intentionally avoided here.
+
+Chapter 2: Vectors:
+
+This chapter begins the mathematical portion of the book with a thorough
+review of vectors quantiies and their properties. Vectors are of
+fundamental importance in the study of 3D computer graphics, and we make
+extensive use of operations such as the dot product and cross product
+throughout the book
+
+Chapter 3: Matrices:
+Chapter 4: Transforms
+Chapter 5:Geometry for 3D Engines
+Chapter 6: Ray Tracing
+Chapter 7: Lighting and Shading
+Chapter 8: Visibility Determination
+Chapter 9: Polygonal Techniques
+Chapter 10: Shadows
+Chapter 11: Curves and Surfaces
+Chapter 12: Collision Detection
+Chapter 13: Linear Physics
+Chapter 14: Rotational Physics
+Chapter 15: Fluid and Cloth Simulation
+Chapter 16: Numerical Methods
+
+
+
+
+
+Chapter 1: The Rendering Pipeline
+
+preliminary review of the rendering pipeline. It covers general functions,
+such as vertex transformation and primitive rasterization, which are
+performed my modern 3D graphics hardware.
+
+Typical scene that is to be rendered as 3D graphics is composed of
+many separate objects. The geometrical forms of these objects are each
+represented by a set of vertices and a particular type of graphics
+primitive that indicates how the vertices are connected to produce a shape.
+
+1.1 Graphics Processors
+1.2 Vertex Transformation
+
+Geometrical data is passed to the graphics hardware in the context
+of a threedimensional space. One of the jobs performed by the graphics
+hardware is to transform this data into geometry that can be drawn into
+a two-dimensional viewport. There are several different coordinate systems
+associated with the rendering pipeline.
+The vertices of a model are typcailly stored in object space, a coordinate
+system that is local to the particular model and used only by that model.
+The position and orientation of each model are often stored in wordl space,
+a global coordinate system that ties all of the object spaces together.
+Before an object can be rendered, its vertices must be transformed into
+camera space (also called eye space), the space in which the x and y
+axes are aligned to the display and the z axis is parallel to the
+viewing direction.
+It is possible to transform vertices from object space directly into
+camera space by concatenating the matrices representing the transformations
+from object space to world space and from world space to camera space.
+The product of these transformations is called the model-view transformation
+
+Once a model's vertices have been transformed into camera space, they undergo
+a projection transformation that has the effect of applying perspective so that
+geometry becomes smaller as the distance from the camera increases.
+The projection is performed in fourdimensional homogeneous coordinates,
+described in Section 4.4, and the space in which the vertices exist after
+projection is called
+
+1.3 Rasterization and Fragment Operations
+
+models vertices have been clipped and transformed into window space
+gpu determines what pixels in the viewport are covered by each graphics
+primitive. The process of filling in the horizontal spans of pixels
+belonging to a primitive is called rasterization.
+
+GPU calculatels: depth, interpolated vertex colors, interpolated texture
+coordinates for each pixel.
+fragment: this information combined with the location of the pixel itself
+
+first fragment operation and the only one that cannot be disabled
+is the pixel ownership test.
+It determines whether a fragment lies in the region of the viewport that
+is currently visible on the display. A possible reason that the pixel
+ownership tests fails is that another window is obscuring a portion of the
+viewport. In this case, fragments falling behind the obscuring window are
+not drawn.
+
+Scissor Test:
+
+
+Chapter 2:
+Vectors
+
+Vectors are of fundamental importance in any 3D game engine. They are
+used to represent points in space, such as the locations of objects
+in a game or the vertices of a triangle mesh. They are also used to
+represent spatial directions, such as the orientation of the camera or
+the surface normals of a triangle mesh. Under standing how to manipulate
+vectors is an essential skill of the successful 3D programmer.
+For now, we make no distinction between vectors representing points
+and vectors representing directions, nor do we concern ourselves with
+how vectors are transformed from one coordinate system to another. These
+topics are extremely important in 3D engine development, however,
+and are addressed in Chapter 4
+
+2.1 Vector Properties
+
+
+Chapter 3
+Matrices
+
+In a 3D graphics engine, calculations can be performed in a multitude of
+different Cartesian coordinate spaces. Moving from one coordinate space
+to another requires the use of transformation matrices. We casually
+referred to matrices at various places in Chapter 2; and in this chapter,
+we acknowledge the importance of matrices in 3D graphics programming by
+presenting a more formal exposition of their properties. The process of
+transforming points and direction vecotrs from one coordinate space
+to another is described in Chapter 4.
+
+
+
+
+
+
