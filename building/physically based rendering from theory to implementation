@@ -1,0 +1,11 @@
+Physically Based Rendering describes both the mathematical theory
+behind a modern photorealistic rendering system
+as well as its practical implementation
+
+1.1 Literate Programming
+idea: programs should be written more for people's consumption
+that for computers' consumption.
+
+pbrt rendering system
+
+literate programming metalanguage

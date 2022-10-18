@@ -1,0 +1,86 @@
+Background:
+When rendering 3D graphics, there are two questions we want to answer:
+
+1. How do we represent a 3-dimensional wolrd?
+2. How do we convert this representation into a 2-dimensional image?
+
+geomertry: world populated with objects
+light sources: contained in the world - scatter light rays onto the geometry
+rendering equation
+
+To view this scene, we place a camera in the world. This analogous
+to our eyes. Light rays bouncing off the geometry converge at the
+camera, and we record where those rays end up on an imaginary canvas
+called the image plane. In doing so, we have to determine what is actually
+visible to each point on the image plane
+
+
+There are two approaches to solving the visibility problem:
+ray tracing: conceptually simple approach
+-simulates light rays reaching the camera by sending out rays from
+the camera, then tracing its path as it travels to a light source.
+This maps well to how light physically travels in the real world, making
+it simple to simulate real-world effects such as shadows and reflections.
+These effects are collectively known as global illumination
+
+This simulation is slow.
+
+Alternate approach is rasterization. IN this approach, we first project
+the geometry onto the image plane, then work directly on the perspective
+corrected representation of the geometry. This approach can be implemented
+more efficiently, but at the cost of increased complexity. Global
+illumination effects need to be special-cased one by one, often require
+multiple rendering passes and pre-computation ("baking")
+
+Rasterization works by projecting the geometry onto the image plane,
+then checking which pixels on the plane are covered by the projected
+geometry.
+
+In this project ray tracing will be used
+
+1. Casting rays from the camera to the image plane
+
+- In the real world, light rays originate at light sources, run into
+objects, causing bounced rays to scatter in many directions.
+
+In forward tracing, most rays don't end up at the camera. In backward
+tracing, we only consider rays that end at the camerra by starting at the
+camera.
+
+Backward tracing:
+-How many rays do we cast, and which ones?
+
+Devide the image plane into small regions, one corresponding to each pixel
+in the output image. Then, we construct a ray starting at the camera
+and passing through the center of each region.
+
+A ray is constructed, originating at the camera and passing through
+a point on the image plane.
+
+The position of the camera is constant, we call it c
+The image plane is represented by the positions of its four corners, call
+them x1, x2, x3, and x4.
+Suppose we have a point p on the image plane. This point is some percentage
+a ∈ [0,1] (between 0 and 1 inclusive) of the distance horizontally
+between the left and right edges of the image plane. Similarly, it's some
+percentage β ∈ [0,1] of the distance vertically between the top and bottom
+edges of the image plane.
+
+To find p, we linearly interpolate (lerp)  a distance of a betwen x1
+and x2. This gives us a point a percent along the way on the line
+segment between the two vectors. We do this again between x3 and x4,
+giving us a point a percent along the way on the line segment between
+these two vectors. Then, we take the two resulting points and lerp a
+distance of β between them. This is known as bilinear interpolation.
+
+Finally the resulting ray is the one originating at p, with a direction
+of o = (p -c ). The ray could have also originated at the camera, c, but
+we don't care about the points on the ray in between the camera and the
+image plane. So, we'll start the ray at the image plane.
+
+Project:
+Goals:
+-Build the basic infrastructure for a ray tracer
+-Construct foundational data structures such as vectors
+-Render a simple image
+
