@@ -1,19 +1,21 @@
 import pygame
-
+import math
 
 WHITE = (255,255,255)
+
 
 class main:
     def __init__(self):
         (width, height) = (400,400)
         self.screen = pygame.display.set_mode((width, height))
-        pygame.display.flip()
-    def run(self):
-        running = True
-        while running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    running = False
+        self.clock = pygame.time.Clock()
+        self.unformated = 120
+        self.heading = math.radians(self.unformated)
+        self.createform()
+        self.transform = Matrix([math.cos(self.heading),0, -math.sin(self.heading),
+                                 0,1,0,
+                                 math.sin(self.heading), 0, math.cos(self.heading)])
+
 
     def createform(self):
         self.tris = []
@@ -41,15 +43,38 @@ class main:
         t4 = Triangle(t4v1, t4v2, t4v3, WHITE)
         self.tris.append(t4)
 
-    def draw(self):
-        for t in self.tris:
-            pygame.draw.line(self.screen, WHITE, (t.v1.x+200, t.v1.y+200), (t.v2.x+200, t.v2.y+200))
-            pygame.draw.line(self.screen, WHITE, (t.v2.x+200, t.v2.y+200), (t.v3.x+200, t.v3.y+200))
-            pygame.draw.line(self.screen, WHITE, (t.v1.x+200, t.v1.y+200), (t.v3.x+200, t.v3.y+200))
-            pygame.display.flip()
+    def updatetransform(self, heading):
+        self.transform = Matrix([math.cos(heading), 0, -math.sin(heading),
+                                 0, 1, 0,
+                                 math.sin(heading), 0, math.cos(heading)])
 
-    def printit(self):
-        print(self.tris[0].v1.x)
+    def draw(self):
+        self.screen.fill((0, 0, 0))
+        for t in self.tris:
+            v1 = self.transform.transform(t.v1)
+            v2 = self.transform.transform(t.v2)
+            v3 = self.transform.transform(t.v3)
+            pygame.draw.line(self.screen, WHITE, (v1.x+200, v1.y+200), (v2.x+200, v2.y+200))
+            pygame.draw.line(self.screen, WHITE, (v2.x+200, v2.y+200), (v3.x+200, v3.y+200))
+            pygame.draw.line(self.screen, WHITE, (v1.x+200, v1.y+200), (v3.x+200, v3.y+200))
+
+    def run(self):
+        running = True
+        while running:
+            self.draw()
+            pygame.display.flip()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_LEFT]:
+                self.unformated += 0.01
+                self.heading = math.radians(self.unformated)
+                self.updatetransform(self.heading)
+            if keys[pygame.K_RIGHT]:
+                self.unformated -= 0.01
+                self.heading = math.radians(self.unformated)
+                self.updatetransform(self.heading)
 
 
 
@@ -66,12 +91,28 @@ class Triangle:
         self.v3 = v3
         self.color = color
 
+class Matrix:
+    def __init__(self, values):
+        self.values = values
+    def muliply(self, other):
+        result = []
+        for row in range(3):
+            for col in range(3):
+                for i in range(3):
+                    result[row * 3 + col] += self.values[row * 3 + i] * other.values[i * 3 + col]
+        return Matrix(result)
+
+    def transform(self, input):
+        return vertex(
+            input.x * self.values[0] + input.y * self.values[3] + input.z * self.values[6],
+            input.x * self.values[1] + input.y * self.values[4] + input.z * self.values[7],
+            input.x * self.values[2] + input.y * self.values[5] + input.z * self.values[8],
+        )
+
+
 
 if __name__ == "__main__":
     main = main()
-    main.createform()
-    main.printit()
-    main.draw()
     main.run()
 
 
