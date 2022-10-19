@@ -73,6 +73,11 @@ class main:
 
     def coloreddrawing(self):
         self.screen.fill((0, 0, 0))
+
+        zBuffer = [0] * 160000
+        for q in range (len(zBuffer)):
+            zBuffer[q] = -math.inf
+
         for t in self.tris:
             v1 = self.transform.transform(t.v1)
             v2 = self.transform.transform(t.v2)
@@ -98,8 +103,11 @@ class main:
                     b2 = ((y - v1.y) * (v3.x - v1.x) + (v3.y - v1.y) * (v1.x - x)) / triangleArea
                     b3 = ((y - v2.y) * (v1.x - v2.x) + (v1.y - v2.y) * (v2.x - x)) / triangleArea
                     if b1 >= 0 and b1 <= 1 and b2 >= 0 and b2 <= 1 and b3 >= 0 and b3 <= 1:
-                        self.screen.set_at((x,y), t.color)
-
+                        depth = b1 * v1.z + b2 * v2.z + b3 * v3.z
+                        zIndex = y * 400 + x
+                        if(zBuffer[zIndex] < depth):
+                            self.screen.set_at((x,y), t.color)
+                            zBuffer[zIndex] = depth
 
     def run(self):
         running = True
@@ -112,19 +120,19 @@ class main:
                     running = False
             keys = pygame.key.get_pressed()
             if keys[pygame.K_LEFT]:
-                self.unformated += 5
+                self.unformated += 1.4
                 self.heading = math.radians(self.unformated)
                 self.updatetransform(self.heading, self.pitch)
             if keys[pygame.K_RIGHT]:
-                self.unformated -= 5
+                self.unformated -= 1.4
                 self.heading = math.radians(self.unformated)
                 self.updatetransform(self.heading, self.pitch)
             if keys[pygame.K_DOWN]:
-                self.pitchunformated += 5
+                self.pitchunformated += 1.4
                 self.pitch = math.radians(self.pitchunformated)
                 self.updatetransform(self.heading, self.pitch)
             if keys[pygame.K_UP]:
-                self.pitchunformated -= 5
+                self.pitchunformated -= 1.4
                 self.pitch = math.radians(self.pitchunformated)
                 self.updatetransform(self.heading, self.pitch)
 
