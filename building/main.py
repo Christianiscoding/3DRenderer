@@ -9,8 +9,9 @@ BLUE = (0,0,255)
 
 class main:
     def __init__(self):
-        (width, height) = (400,400)
-        self.screen = pygame.display.set_mode((width, height))
+        self.width = 1600
+        self.height = 900
+        self.screen = pygame.display.set_mode((self.width, self.height))
         self.clock = pygame.time.Clock()
         self.unformated = 68
         self.pitchunformated = 170
@@ -52,6 +53,10 @@ class main:
         t4 = Triangle(t4v1, t4v2, t4v3, BLUE)
         self.tris.append(t4)
 
+
+
+
+
     def updatetransform(self, heading, pitch):
         self.headingTransform = Matrix([math.cos(heading), 0, math.sin(heading),
                                         0, 1, 0,
@@ -61,15 +66,29 @@ class main:
                                       0, -math.sin(pitch), math.cos(pitch)])
         self.transform = self.headingTransform.muliply(self.pitchtransform)
 
+
+
     def draw(self):
         self.screen.fill((0, 0, 0))
         for t in self.tris:
             v1 = self.transform.transform(t.v1)
             v2 = self.transform.transform(t.v2)
             v3 = self.transform.transform(t.v3)
-            pygame.draw.line(self.screen, WHITE, (v1.x+200, v1.y+200), (v2.x+200, v2.y+200))
-            pygame.draw.line(self.screen, WHITE, (v2.x+200, v2.y+200), (v3.x+200, v3.y+200))
-            pygame.draw.line(self.screen, WHITE, (v1.x+200, v1.y+200), (v3.x+200, v3.y+200))
+            pygame.draw.line(self.screen, WHITE, (v1.x+self.width/2, v1.y+self.height/2), (v2.x+self.width/2, v2.y+self.height/2))
+            pygame.draw.line(self.screen, WHITE, (v2.x+self.width/2, v2.y+self.height/2), (v3.x+self.width/2, v3.y+self.height/2))
+            pygame.draw.line(self.screen, WHITE, (v1.x+self.width/2, v1.y+self.height/2), (v3.x+self.width/2, v3.y+self.height/2))
+
+        blockvector = vertex(200,200,200)
+        block = Block(blockvector, WHITE)
+        vu1 = self.transform.transform(block.v1)
+        vu2 = self.transform.transform(block.v2)
+        vu3 = self.transform.transform(block.v3)
+        vu4 = self.transform.transform(block.v4)
+        vu5 = self.transform.transform(block.v5)
+        vu6 = self.transform.transform(block.v6)
+        vu7 = self.transform.transform(block.v7)
+        vu8 = self.transform.transform(block.v8)
+
 
     def coloreddrawing(self):
         self.screen.fill((0, 0, 0))
@@ -120,19 +139,19 @@ class main:
                     running = False
             keys = pygame.key.get_pressed()
             if keys[pygame.K_LEFT]:
-                self.unformated += 1.4
+                self.unformated += 0.1
                 self.heading = math.radians(self.unformated)
                 self.updatetransform(self.heading, self.pitch)
             if keys[pygame.K_RIGHT]:
-                self.unformated -= 1.4
+                self.unformated -= 0.1
                 self.heading = math.radians(self.unformated)
                 self.updatetransform(self.heading, self.pitch)
             if keys[pygame.K_DOWN]:
-                self.pitchunformated += 1.4
+                self.pitchunformated += 0.1
                 self.pitch = math.radians(self.pitchunformated)
                 self.updatetransform(self.heading, self.pitch)
             if keys[pygame.K_UP]:
-                self.pitchunformated -= 1.4
+                self.pitchunformated -= 0.1
                 self.pitch = math.radians(self.pitchunformated)
                 self.updatetransform(self.heading, self.pitch)
 
@@ -150,6 +169,19 @@ class Triangle:
         self.v2 = v2
         self.v3 = v3
         self.color = color
+
+class Block:
+    def __init__(self, v ,color):
+        self.v = v
+        self.color = color
+        self.v1 = vertex(v.x - 50, v.y - 50, v.z - 50)
+        self.v2 = vertex(v.x + 50, v.y + 50, v.z - 50)
+        self.v3 = vertex(v.x + 50, v.y + 50, v.z - 50)
+        self.v4 = vertex(v.x + 50, v.y + 50, v.z + 50)
+        self.v5 = vertex(v.x - 50, v.y - 50, v.z + 50)
+        self.v6 = vertex(v.x - 50, v.y + 50, v.z + 50)
+        self.v7 = vertex(v.x - 50, v.y + 50, v.z - 50)
+        self.v8 = vertex(v.x + 50, v.y - 50, v.z + 50)
 
 class Matrix:
     def __init__(self, values):
